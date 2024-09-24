@@ -1,0 +1,74 @@
+
+from datetime import datetime, timedelta
+from airflow.decorators import dag, task
+
+# Define default arguments
+default_args = {
+    'owner': 'User_1',  # Changed 'Owner' to 'owner'
+    'retries': 5,
+    'retry_delay': timedelta(minutes=5)
+}
+
+# Define the DAG
+@dag(
+    dag_id='dag_with_taskflow_api_V1',  # dag_id should be a string
+    default_args=default_args,
+    start_date=datetime(2024, 9, 19),
+    schedule_interval='@daily'
+)
+def hello_world_etl():
+    
+    # Define task 1
+    @task(multiple_outputs=True)
+    def get_name():
+        return {
+        "first_name" : "Virat", 
+        "last_name" : "kohli"
+        }
+
+    # Define task 2
+    @task()
+    def get_age():
+        return "25"
+
+    # Define task 3
+    @task()
+    def greet(first_name,last_name,age):
+        print(f"Hello world! My name is {first_name}{Last_name} and I am {age} years old!")
+
+    # Set task dependencies
+    name_dict = get_name()
+    age = get_age()
+    greet(first_name=name_dict['first_name'], last_name=name_dict['last_name'],age)
+
+# Create the DAG instance
+greet_dag = hello_world_etl()
+____________________________________________________________________________________                                      
+
+
+
+from datetime import datetime, timedelta
+from airflow import DAG
+from airflow.operators.bash import BashOperator
+ 
+default_args = { 
+
+		'owner': 'User_1',
+		'retries': 5,
+		'retry_delay': timedelta(minutes=5)
+}
+
+with DAG(
+	dag_id = "dag_with_catchup_backfill_v1"	
+	default_args=default_args
+	start_date= datetime(2024,10,19),
+	schedule_interval= '@daily'
+	catchup = True
+) as dag:
+	task1 = BashOperator(
+	task_id = "task1",
+	bash_command= 'echo this is simple command'
+	)
+___________________________________________________________________________________________________
+
+	
